@@ -161,8 +161,15 @@ function removePlayer(socketId) {
     playersR = playersR.filter((p) => p.id !== socketId);
 }
 
-app.use(cors());
+// Configure CORS to allow requests from all origins
+app.use(
+    cors({
+        origin: "*",
+        methods: ["GET", "POST"],
+        credentials: true,
+    })
+);
 
 server.listen(3000, () => {
-    console.log("Server is running on port 3000");
+    // console.log("Server is running on port 3000");
 });
