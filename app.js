@@ -44,6 +44,8 @@ io.on("connection", (socket) => {
     });
 
     socket.on("makeMove", ({ room, position }) => {
+        // console.log("Room: ", room);
+        // console.log("Position: ", Number(position));
         if (!games.has(room)) {
             return;
         }
@@ -52,7 +54,7 @@ io.on("connection", (socket) => {
         const success = game.makeMove(Number(position));
 
         if (success) {
-            console.log("Game State: ", game.getBoard());
+            // console.log("Game State: ", game.getBoard());
             // Broadcast the updated game state to all players in the room
             io.to(room).emit("gameUpdate", {
                 board: game.getBoard(),
@@ -103,7 +105,7 @@ function findMatch(socket) {
         opponent =
             playersX[0] ||
             playersO[0] ||
-            (playersR.length > 1 ? playersR[1] : null);
+            (playersR.length > 1 ? playersR[0] : null);
         if (opponent) {
             if (opponent.choice === "X") {
                 playerSymbol = "O";
@@ -131,6 +133,7 @@ function findMatch(socket) {
 
         // Join both players to the same room
         socket.join(room);
+        io.sockets.sockets.get(opponent.id)?.join(room);
 
         // Send initial game state with player symbols
         const gameState = {
@@ -146,8 +149,9 @@ function findMatch(socket) {
             Turn: games.get(room).getCurrentPlayer(),
             symbol: opponentSymbol,
         };
-
-        console.log("Initial Game State: ", gameState);
+        // console.log("Initial Game State: ", gameState);
+        // console.log("Opponent Id: ", opponent.id);
+        // console.log("Player Id: ", socket.id);
         io.to(opponent.id).emit("matchFound", opponentGameState);
         socket.emit("matchFound", gameState);
     }
@@ -177,5 +181,5 @@ app.use(
 );
 
 server.listen(3000, () => {
-    // console.log("Server is running on port 3000");
+    console.log("Server is running on port 3000");
 });
