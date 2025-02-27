@@ -3,7 +3,6 @@ import http from "http";
 import cors from "cors";
 import { Server } from "socket.io";
 import { TicTacToe } from "./game.js";
-import { log } from "console";
 
 const app = express();
 const server = http.createServer(app);
@@ -44,8 +43,6 @@ io.on("connection", (socket) => {
     });
 
     socket.on("makeMove", ({ room, position }) => {
-        // console.log("Room: ", room);
-        // console.log("Position: ", Number(position));
         if (!games.has(room)) {
             return;
         }
@@ -54,7 +51,6 @@ io.on("connection", (socket) => {
         const success = game.makeMove(Number(position));
 
         if (success) {
-            // console.log("Game State: ", game.getBoard());
             // Broadcast the updated game state to all players in the room
             io.to(room).emit("gameUpdate", {
                 board: game.getBoard(),
@@ -149,9 +145,7 @@ function findMatch(socket) {
             Turn: games.get(room).getCurrentPlayer(),
             symbol: opponentSymbol,
         };
-        // console.log("Initial Game State: ", gameState);
-        // console.log("Opponent Id: ", opponent.id);
-        // console.log("Player Id: ", socket.id);
+
         io.to(opponent.id).emit("matchFound", opponentGameState);
         socket.emit("matchFound", gameState);
     }
@@ -181,5 +175,5 @@ app.use(
 );
 
 server.listen(3000, () => {
-    console.log("Server is running on port 3000");
+    // console.log("Server is running on port 3000");
 });

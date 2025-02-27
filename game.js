@@ -28,7 +28,7 @@ class TicTacToe {
 
         // Check for draw
         if (this.board.every((cell) => cell !== null)) {
-            this.winner = "draw";
+            this.winner = this.winner ? this.winner : "draw";
             return true;
         }
 
@@ -73,8 +73,3 @@ class TicTacToe {
 
 // Export the class
 export { TicTacToe };
-
-// Update app.js to include game logic
-const games = new Map();
-
-// Add these socket event handlers in app.js's io.on("connection", (socket) => { ... })
