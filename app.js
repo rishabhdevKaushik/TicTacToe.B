@@ -24,6 +24,9 @@ const games = new Map();
 io.on("connection", (socket) => {
     // Handle player joining with their choice (X, O, or R)
     socket.on("joinGame", (choice) => {
+        // Remove player from any existing lists first
+        removePlayer(socket.id);
+
         const player = { id: socket.id, choice };
 
         switch (choice) {
